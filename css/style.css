@@ -1,0 +1,162 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: Helvetica;
+    color: #102f5e;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("../img/background.jpg");
+    background-position: center;
+}
+
+button {
+    align-items: center;
+    background-color: #fdfdfd;
+    border: 1px solid #102f5e;
+    color: #102f5e;
+    cursor: pointer;
+    display: flex;
+    font-size: 1em;
+    font-weight: bold;
+    justify-content: center;
+    padding: 0.2em;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #102f5e;
+    color: #fdfdfd;
+}
+
+button:hover i {
+    color: #fdfdfd;
+}
+
+button i {
+    color: #102f5e;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+input, select {
+    padding: 0.25em 0.5em;
+}
+
+.hide {
+    display: none;
+}
+
+.todo-container {
+    background-color: #d0cccc;
+    width: 480px;
+    margin: 5rem auto;
+    padding: 2rem 1.5rem;
+    border-radius: 15px;
+}
+
+.todo-container header {
+    text-align: center;
+    padding: 0 1rem 1rem;
+    border-bottom: 1px solid #aaa;
+}
+
+#todo-add, #todo-edit {
+    padding: 1rem;
+    border-bottom: 1px solid #aaa;
+}
+
+h4 {
+    margin-bottom: 0.5rem;
+}
+
+.todo-control {
+    display: flex;
+}
+
+.todo-control input {
+    flex: 1;
+    margin-right: 0.3rem;
+}
+
+#cancel-edit-btn {
+    margin-top: 1rem;
+}
+
+#toolbar {
+    border-bottom: 1px solid #aaa;
+    display: flex;
+    padding: 1rem;
+}
+
+#search {
+    border-right: 1px solid #aaa;
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+    padding-right: 1rem;
+    width: 65%;
+}
+
+#search form {
+    display: flex;
+}
+
+#search input {
+    margin-right: .3rem;
+    width: 100%;
+}
+
+#filter{
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+}
+
+.todo {
+    align-items: center;
+    border-bottom: 1px solid #aaa;
+    display: flex;
+    padding: 1rem;
+    transition: .3s;
+}
+
+.todo h3 {
+    flex: 1;
+    font-size: .9rem;
+}
+
+.complete-todo i {
+    color: #008000;
+}
+
+.complete-todo:hover {
+    background-color: #008000;
+}
+
+.edit-todo i {
+    color: #ff6400;
+}
+
+.edit-todo:hover {
+    background-color: #ff6400;
+}
+
+.delete-todo i {
+    color: #9b111e;
+}
+
+.delete-todo:hover {
+    background-color: #9b111e;
+}
+
+.done {
+    background-color: #395169;
+}
+
+.done h3 {
+    color: #fdfdfd;
+    font-style: italic;
+    text-decoration: line-through;
+}
