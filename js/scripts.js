@@ -5,6 +5,11 @@ const todoList = document.querySelector("#todo-list")
 const todoEdit = document.querySelector("#todo-edit")
 const todoEditInput = document.querySelector("#todo-edit__input")
 const cancelEditBtn = document.querySelector("#cancel-edit-btn")
+const searchForm = document.querySelector("#search__form")
+const searchInput = document.querySelector("#search__input");
+const searchBtn = document.querySelector("#search__button");
+const filterSelect = document.querySelector("#filter__select");
+const toolbar = document.querySelector("#toolbar");
 
 let oldInputValue;
 
@@ -42,6 +47,7 @@ function toggleForms(){
     todoEdit.classList.toggle("hide");
     todoAdd.classList.toggle("hide");
     todoList.classList.toggle("hide");
+    toolbar.classList.toggle("hide");
 }
 
 function updateTodo(editInputValue){
@@ -67,45 +73,108 @@ todoAdd.addEventListener("submit", (e) => {
     }
 })
 
-document.addEventListener("click", (e) => {
+document.addEventListener("click", (e) => {    
+    // Done, edit, remove
     const targetBtn = e.target;
     const parentDiv = targetBtn.closest("div");
+    
     let todoTitle;
-
+    
     if(parentDiv && parentDiv.querySelector("h3")) {
         todoTitle = parentDiv.querySelector("h3").innerText;
     }
-
+    
     if (targetBtn.classList.contains("complete-todo")){
         parentDiv.classList.toggle("done");
     }
-
+    
     if (targetBtn.classList.contains("edit-todo")){
         toggleForms();
-
+        
         todoEditInput.value = todoTitle;
         oldInputValue = todoTitle;
+        
+        todoEditInput.focus();
     }
-
+    
     if (targetBtn.classList.contains("delete-todo")){
         parentDiv.remove();
+    }
+
+    // Filter
+    const allTodos = document.querySelectorAll(".todo");
+    
+    if (filterSelect.value === "all") {
+        allTodos.forEach((todo) => {
+            todo.classList.remove("hide");          
+        });
+    }
+    
+    if (filterSelect.value === "done") {
+        allTodos.forEach((todo) => {
+            if (todo.classList.contains("done")){
+                todo.classList.remove("hide");  
+            } else {
+                todo.classList.add("hide");
+            }
+        });
+    }
+    
+    if (filterSelect.value === "todo") {
+        allTodos.forEach((todo) => {
+            if (todo.classList.contains("done")){
+                todo.classList.add("hide");  
+            } else {
+                todo.classList.remove("hide");
+            }
+        });
     }
 })
 
 cancelEditBtn.addEventListener("click", (e) => {
     e.preventDefault();
-
+    
     toggleForms();
 })
 
 todoEdit.addEventListener("submit", (e) => {
     e.preventDefault();
-
+    
     const editInputValue = todoEditInput.value;
-
+    
     if(editInputValue) {
         updateTodo(editInputValue);
     }
-
+    
     toggleForms();
+})
+
+searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (searchInput.value) {
+        allTodos = document.querySelectorAll("h3")
+
+        allTodos.forEach((todo) => {
+            let todoTitle = todo.innerText;
+            let parentDiv = todo.closest("div");
+
+            if (searchInput.value !== todoTitle ) {
+                parentDiv.classList.add("hide");
+            } else {
+                parentDiv.classList.remove("hide");
+            }
+        });
+    } 
+    
+    if (searchInput.value === "") {
+        allTodos.forEach((todo) => {
+            let parentDiv = todo.closest("div");
+            
+            if (searchInput.value === "") {
+                parentDiv.classList.remove("hide");
+            }
+        });
+    }
+    
 })
