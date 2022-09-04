@@ -7,7 +7,7 @@ const todoEditInput = document.querySelector("#todo-edit__input")
 const cancelEditBtn = document.querySelector("#cancel-edit-btn")
 const searchForm = document.querySelector("#search__form")
 const searchInput = document.querySelector("#search__input");
-const searchBtn = document.querySelector("#search__button");
+const eraseSearchBtn = document.querySelector("#erase-search__button");
 const filterSelect = document.querySelector("#filter__select");
 const toolbar = document.querySelector("#toolbar");
 
@@ -149,32 +149,35 @@ todoEdit.addEventListener("submit", (e) => {
     toggleForms();
 })
 
-searchForm.addEventListener("submit", (e) => {
+// Search
+searchForm.addEventListener("input", (e) => {
     e.preventDefault();
+    
+    allTodos = document.querySelectorAll("h3")
 
-    if (searchInput.value) {
-        allTodos = document.querySelectorAll("h3")
+    allTodos.forEach((todo) => {
+        let todoTitle = todo.innerText;
+        let parentDiv = todo.closest("div");
 
-        allTodos.forEach((todo) => {
-            let todoTitle = todo.innerText;
-            let parentDiv = todo.closest("div");
-
-            if (searchInput.value !== todoTitle ) {
-                parentDiv.classList.add("hide");
-            } else {
-                parentDiv.classList.remove("hide");
-            }
-        });
-    } 
+        if (!(todoTitle.includes(searchInput.value))) {
+            parentDiv.classList.add("hide");
+        } else {
+            parentDiv.classList.remove("hide");
+        }
+    });
     
     if (searchInput.value === "") {
         allTodos.forEach((todo) => {
             let parentDiv = todo.closest("div");
             
-            if (searchInput.value === "") {
-                parentDiv.classList.remove("hide");
-            }
+            parentDiv.classList.remove("hide");
         });
     }
     
+})
+
+eraseSearchBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    searchInput.value = "";
 })
