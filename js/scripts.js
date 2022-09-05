@@ -10,8 +10,12 @@ const searchInput = document.querySelector("#search__input");
 const eraseSearchBtn = document.querySelector("#erase-search__button");
 const filterSelect = document.querySelector("#filter__select");
 const toolbar = document.querySelector("#toolbar");
+const modalCancelBtn = document.querySelector(".modal__cancel-btn");
+const modalconfirmBtn = document.querySelector(".modal__confirm-btn");
+const modalDelete = document.querySelector("#modal-delete");
 
 let oldInputValue;
+let targetDel;
 
 // Funções
 function saveTodo(text) {
@@ -62,6 +66,19 @@ function updateTodo(editInputValue){
     })
 }
 
+function targetDelete(target){
+    const parentDiv = target.closest("div");
+    targetDel = parentDiv;
+}
+
+function deleteTodo(){
+    targetDel.remove();
+}
+
+function modalToggle(){
+    modalDelete.classList.toggle("hide");
+}
+
 // Eventos
 todoAdd.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -71,6 +88,24 @@ todoAdd.addEventListener("submit", (e) => {
     if(inputValue) {
         saveTodo(inputValue);
     }
+})
+
+todoEdit.addEventListener("submit", (e) => {
+    e.preventDefault();
+    
+    const editInputValue = todoEditInput.value;
+    
+    if(editInputValue) {
+        updateTodo(editInputValue);
+    }
+    
+    toggleForms();
+})
+
+cancelEditBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    
+    toggleForms();
 })
 
 document.addEventListener("click", (e) => {    
@@ -98,9 +133,15 @@ document.addEventListener("click", (e) => {
     }
     
     if (targetBtn.classList.contains("delete-todo")){
-        parentDiv.remove();
+        modalToggle();
+        targetDelete(targetBtn);
     }
-
+    
+    if (targetBtn.classList.contains("modal__confirm-btn")){
+        deleteTodo();
+        modalToggle();
+    }
+    
     // Filter
     const allTodos = document.querySelectorAll(".todo");
     
@@ -131,35 +172,17 @@ document.addEventListener("click", (e) => {
     }
 })
 
-cancelEditBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    
-    toggleForms();
-})
-
-todoEdit.addEventListener("submit", (e) => {
-    e.preventDefault();
-    
-    const editInputValue = todoEditInput.value;
-    
-    if(editInputValue) {
-        updateTodo(editInputValue);
-    }
-    
-    toggleForms();
-})
-
 // Search
 searchForm.addEventListener("input", (e) => {
     e.preventDefault();
-    
+
     allTodos = document.querySelectorAll("h3")
 
     allTodos.forEach((todo) => {
         let todoTitle = todo.innerText;
         let parentDiv = todo.closest("div");
 
-        if (!(todoTitle.includes(searchInput.value))) {
+        if (!(todoTitle.toLowerCase().includes(searchInput.value.toLowerCase()))) {
             parentDiv.classList.add("hide");
         } else {
             parentDiv.classList.remove("hide");
@@ -180,4 +203,9 @@ eraseSearchBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
     searchInput.value = "";
+})
+
+// Modal
+modalCancelBtn.addEventListener("click", (e) => {
+    modalToggle();
 })
