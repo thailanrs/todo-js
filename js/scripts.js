@@ -16,12 +16,20 @@ const modalDelete = document.querySelector("#modal-delete");
 
 let oldInputValue;
 let targetDel;
+let storage;
 
 // Funções
-function saveTodo(text) {
+const setStorage = (storage) => localStorage.setItem('allTodos', JSON.stringify(storage));
+const getStorage = () => JSON.parse(localStorage.getItem('allTodos'));
+storage = getStorage() ?? [];
+
+function addTodo(text, status = "") {
     const todo = document.createElement("div");
     todo.classList.add("todo");
-
+    if (status === "checked") {
+        todo.classList.toggle("done");        
+    }
+    
     const todoTitle = document.createElement("h3");
     todoTitle.innerText = text;
     todo.appendChild(todoTitle);
@@ -30,19 +38,19 @@ function saveTodo(text) {
     doneBtn.classList.add("complete-todo");
     doneBtn.innerHTML = '<i class="fa-solid fa-circle-check">';
     todo.appendChild(doneBtn);
-
+    
     const editBtn = document.createElement("button");
     editBtn.classList.add("edit-todo");
     editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square">';
     todo.appendChild(editBtn);
-
+    
     const deleteBtn = document.createElement("button");
     deleteBtn.classList.add("delete-todo");
     deleteBtn.innerHTML = '<i class="fa-solid fa-xmark-circle">';
     todo.appendChild(deleteBtn);
-
+    
     todoList.appendChild(todo);
-
+    
     todoAddInput.value = "";
     todoAddInput.focus();
 }
@@ -62,6 +70,13 @@ function updateTodo(editInputValue){
 
         if (todoTitle.innerText === oldInputValue) {
             todoTitle.innerText = editInputValue;
+            
+            storage = storage.map(todo => {
+                if (todo.title === oldInputValue) {
+                    todo.title = editInputValue;
+                }
+                setStorage(storage);
+            })
         }
     })
 }
@@ -69,14 +84,31 @@ function updateTodo(editInputValue){
 function targetDelete(target){
     const parentDiv = target.closest("div");
     targetDel = parentDiv;
+
 }
 
 function deleteTodo(){
     targetDel.remove();
+    let index;
+    storage.forEach(todo => {
+        if (todo.title === targetDel.querySelector("h3").innerText){
+            index = storage.indexOf(todo);
+        }
+    })
+    storage.splice(index, 1);
+    setStorage(storage);
 }
 
 function modalToggle(){
     modalDelete.classList.toggle("hide");
+}
+
+function atualizaTela(){
+    if(storage.length > 0){
+        storage.forEach(todo => {
+            addTodo(todo.title, todo.status);
+        })
+    }
 }
 
 // Eventos
@@ -85,9 +117,11 @@ todoAdd.addEventListener("submit", (e) => {
 
     const inputValue = todoAddInput.value;
 
-    if(inputValue) {
-        saveTodo(inputValue);
-    }
+    addTodo(inputValue);
+
+    storage.push({'title': inputValue})
+    setStorage(storage);
+    
 })
 
 todoEdit.addEventListener("submit", (e) => {
@@ -104,16 +138,17 @@ todoEdit.addEventListener("submit", (e) => {
 
 cancelEditBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    
-    toggleForms();
+
+    toggleForms(); 
 })
 
 document.addEventListener("click", (e) => {    
     // Done, edit, remove
     const targetBtn = e.target;
     const parentDiv = targetBtn.closest("div");
-    
+
     let todoTitle;
+    allTodos = document.querySelectorAll(".todo");
     
     if(parentDiv && parentDiv.querySelector("h3")) {
         todoTitle = parentDiv.querySelector("h3").innerText;
@@ -121,6 +156,18 @@ document.addEventListener("click", (e) => {
     
     if (targetBtn.classList.contains("complete-todo")){
         parentDiv.classList.toggle("done");
+        storage.forEach(todo => {
+            if (todo.title === parentDiv.querySelector("h3").innerText){
+                index = storage.indexOf(todo);
+            }
+        })
+        if (storage[index].status === "checked") {
+            storage[index].status = "";
+            setStorage(storage);
+        } else {
+            storage[index].status = "checked";
+            setStorage(storage);
+        }
     }
     
     if (targetBtn.classList.contains("edit-todo")){
@@ -143,7 +190,6 @@ document.addEventListener("click", (e) => {
     }
     
     // Filter
-    const allTodos = document.querySelectorAll(".todo");
     
     if (filterSelect.value === "all") {
         allTodos.forEach((todo) => {
@@ -209,3 +255,5 @@ eraseSearchBtn.addEventListener("click", (e) => {
 modalCancelBtn.addEventListener("click", (e) => {
     modalToggle();
 })
+
+atualizaTela();
